@@ -2,7 +2,7 @@
 
 namespace Lexer
 {
-    class NodeBinary : Node
+    public class NodeBinary : Node
     {
         private Node _left;
         private Node _right;
