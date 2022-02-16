@@ -1,7 +1,7 @@
 ﻿
 namespace Lexer
 {
-    class NodeNumber : Node
+    public class NodeNumber : Node
     {
         private double _number;
 
