@@ -12,7 +12,7 @@ namespace Lexer
 
         public Node ParseExpression()
         {
-            Node exp = ParseAddSubtract();
+            Node exp = ParseFourActions();
 
             if (_tokenizer.Token != Token.EOF)
             {
@@ -22,30 +22,35 @@ namespace Lexer
             return exp;
         }
 
-        private Node ParseAddSubtract()
+        private Node ParseFourActions()
         {
             Node left = ParseLeaf();
 
             while (true)
             {
                 Func<double, double, double> op = null;
+                switch ( _tokenizer.Token )
+                {
+                    case Token.Add:
+                        op = (a, b) => a + b;
+                        break;
 
-                if (_tokenizer.Token == Token.Add)
-                {
-                    op = (a, b) => a + b;
-                } 
-                else if (_tokenizer.Token == Token.Subtract)
-                {
-                    op = (a, b) => a - b;
+                    case Token.Subtract:
+                        op = (a, b) => a - b;
+                        break;
+
+                    case Token.Multiply:
+                        op = (a, b) => a * b;
+                        break;
+
+                    case Token.Divide:
+                        op = (a, b) => a / b;
+                        break;
+
+                    default:
+                        return left;
                 }
 
-                // If token isn't a binary operator
-                if (op == null)
-                {
-                    return left;
-                }
-
-                // If token is a binary operator, parse the other side
                 _tokenizer.NextToken();
 
                 Node right = ParseLeaf();
