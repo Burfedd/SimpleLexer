@@ -13,6 +13,8 @@ namespace Lexer
         public Tokenizer(TextReader reader)
         {
             _reader = reader;
+            NextChar();
+            NextToken();
         }
 
         public Token Token

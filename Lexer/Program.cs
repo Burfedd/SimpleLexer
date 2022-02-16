@@ -14,6 +14,8 @@ namespace Lexer
             Parser p = new Parser(t);
 
             Node result = p.ParseExpression();
+
+            Console.WriteLine(result.Eval());
         }
     }
 }
