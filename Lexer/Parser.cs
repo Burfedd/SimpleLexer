@@ -101,6 +101,21 @@ namespace Lexer
 
         private Node ParseLeaf()
         {
+            if (_tokenizer.Token == Token.OpeningParenthesis )
+            {
+                _tokenizer.NextToken();
+
+                Node node = ParseAddSubtract();
+
+                if (_tokenizer.Token == Token.ClosingParenthesis )
+                {
+                    _tokenizer.NextToken();
+                    return node;
+                }
+
+                throw new Exception("Missing closing parenthesis!");
+            }
+
             if (_tokenizer.Token == Token.Number)
             {
                 NodeNumber node = new NodeNumber(_tokenizer.Number);

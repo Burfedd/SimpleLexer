@@ -78,17 +78,27 @@ namespace Lexer
                     NextChar();
                     _currentToken = Token.Divide;
                     return;
+
+                case '(':
+                    NextChar();
+                    _currentToken = Token.OpeningParenthesis;
+                    return;
+
+                case ')':
+                    NextChar();
+                    _currentToken = Token.ClosingParenthesis;
+                    return;
             }
 
-            if (char.IsDigit(_currentChar) || _currentChar == '.')
+            if (char.IsDigit(_currentChar) || _currentChar == ',')
             {
                 StringBuilder sb = new StringBuilder();
                 bool haveDecimalPoint = false;
 
-                while(char.IsDigit(_currentChar) || (!haveDecimalPoint && _currentChar == '.'))
+                while(char.IsDigit(_currentChar) || (!haveDecimalPoint && _currentChar == ','))
                 {
                     sb.Append(_currentChar);
-                    if (_currentChar == '.')
+                    if (_currentChar == ',')
                     {
                         haveDecimalPoint = true;
                     }
@@ -112,6 +122,8 @@ namespace Lexer
         Subtract,
         Multiply,
         Divide,
-        Number
+        Number,
+        OpeningParenthesis,
+        ClosingParenthesis
     }
 }
