@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Lexer
 {
@@ -8,14 +7,7 @@ namespace Lexer
         static void Main(string[] args)
         {
             string input = Console.ReadLine();
-            StringReader sr = new StringReader(input);
-
-            Tokenizer t = new Tokenizer(sr);
-            Parser p = new Parser(t);
-
-            Node result = p.ParseExpression();
-
-            Console.WriteLine(result.Eval());
+            Console.WriteLine(Parser.Parse(input));
         }
     }
 }

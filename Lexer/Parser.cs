@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 
 namespace Lexer
 {
@@ -12,7 +13,7 @@ namespace Lexer
 
         public Node ParseExpression()
         {
-            Node exp = ParseFourActions();
+            Node exp = ParseAddSubtract();
 
             if (_tokenizer.Token != Token.EOF)
             {
@@ -22,9 +23,9 @@ namespace Lexer
             return exp;
         }
 
-        private Node ParseFourActions()
+        private Node ParseAddSubtract()
         {
-            Node left = ParseLeaf();
+            Node left = ParseMultiplyDivide();
 
             while (true)
             {
@@ -39,6 +40,25 @@ namespace Lexer
                         op = (a, b) => a - b;
                         break;
 
+                    default:
+                        return left;
+                }
+
+                _tokenizer.NextToken();
+
+                Node right = ParseMultiplyDivide();
+                left = new NodeBinary(left, right, op);
+            }
+        }
+
+        private Node ParseMultiplyDivide()
+        {
+            Node left = ParseUnary();
+            while ( true )
+            {
+                Func<double, double, double> op = null;
+                switch ( _tokenizer.Token )
+                {
                     case Token.Multiply:
                         op = (a, b) => a * b;
                         break;
@@ -53,9 +73,30 @@ namespace Lexer
 
                 _tokenizer.NextToken();
 
-                Node right = ParseLeaf();
+                Node right = ParseUnary();
                 left = new NodeBinary(left, right, op);
             }
+        }
+
+        private Node ParseUnary()
+        {
+            // + sign
+            if (_tokenizer.Token == Token.Add )
+            {
+                _tokenizer.NextToken();
+                return ParseUnary();
+            }
+
+            // - sign
+            if (_tokenizer.Token == Token.Subtract )
+            {
+                _tokenizer.NextToken();
+
+                var right = ParseUnary();
+                return new NodeUnary(right, (x) => -x);
+            }
+
+            return ParseLeaf();
         }
 
         private Node ParseLeaf()
@@ -69,6 +110,14 @@ namespace Lexer
 
             // Invalid token
             throw new Exception($"Invalid token: {_tokenizer.Token}");
+        }
+
+        public static double Parse(string s)
+        {
+            StringReader sr = new StringReader(s);
+            Tokenizer t = new Tokenizer(sr);
+            Parser p = new Parser(t);
+            return p.ParseExpression().Eval();
         }
     }
 }
