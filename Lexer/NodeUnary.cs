@@ -13,9 +13,9 @@ namespace Lexer
             _op = op;
         }
 
-        public override double Eval()
+        public override double Eval(IContext context)
         {
-            double rightEval = _right.Eval();
+            double rightEval = _right.Eval(context);
             double result = _op(rightEval);
             return result;
         }

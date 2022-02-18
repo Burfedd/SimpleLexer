@@ -2,6 +2,6 @@
 {
     public abstract class Node
     {
-        public abstract double Eval();
+        public abstract double Eval(IContext context);
     }
 }

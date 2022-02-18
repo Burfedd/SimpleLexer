@@ -123,16 +123,23 @@ namespace Lexer
                 return node;
             }
 
+            if (_tokenizer.Token == Token.Identifier )
+            {
+                NodeVariable node = new NodeVariable(_tokenizer.Identifier);
+                _tokenizer.NextToken();
+                return node;
+            }
+
             // Invalid token
             throw new Exception($"Invalid token: {_tokenizer.Token}");
         }
 
-        public static double Parse(string s)
+        public static double Parse(string s, IContext context)
         {
             StringReader sr = new StringReader(s);
             Tokenizer t = new Tokenizer(sr);
             Parser p = new Parser(t);
-            return p.ParseExpression().Eval();
+            return p.ParseExpression().Eval(context);
         }
     }
 }

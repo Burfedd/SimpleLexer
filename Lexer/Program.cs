@@ -7,7 +7,7 @@ namespace Lexer
         static void Main(string[] args)
         {
             string input = Console.ReadLine();
-            Console.WriteLine(Parser.Parse(input));
+            Console.WriteLine(Parser.Parse(input, new SampleContext()));
         }
     }
 }

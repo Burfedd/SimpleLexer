@@ -10,7 +10,7 @@ namespace Lexer
             _number = number;
         }
 
-        public override double Eval()
+        public override double Eval(IContext context)
         {
             return _number;
         }

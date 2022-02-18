@@ -9,6 +9,7 @@ namespace Lexer
         private char _currentChar;
         private Token _currentToken;
         private double _number;
+        private string _identifier;
 
         public Tokenizer(TextReader reader)
         {
@@ -30,6 +31,14 @@ namespace Lexer
             get
             {
                 return _number;
+            }
+        }
+
+        public string Identifier
+        {
+            get
+            {
+                return _identifier;
             }
         }
 
@@ -110,6 +119,21 @@ namespace Lexer
                 return;
             }
 
+            if (char.IsLetter(_currentChar) || _currentChar == '_' )
+            {
+                StringBuilder sb = new StringBuilder();
+
+                while (char.IsLetterOrDigit(_currentChar) || _currentChar == '_' )
+                {
+                    sb.Append(_currentChar);
+                    NextChar();
+                }
+
+                _identifier = sb.ToString();
+                _currentToken = Token.Identifier;
+                return;
+            }
+
             // If nothing was parsed
             throw new InvalidDataException($"Invalid character: {_currentChar}");
         }
@@ -124,6 +148,7 @@ namespace Lexer
         Divide,
         Number,
         OpeningParenthesis,
-        ClosingParenthesis
+        ClosingParenthesis,
+        Identifier
     }
 }
