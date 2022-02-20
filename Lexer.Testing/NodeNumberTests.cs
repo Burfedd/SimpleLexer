@@ -1,9 +1,17 @@
 ﻿using Xunit;
+using NSubstitute;
 
 namespace Lexer.Testing
 {
     public class NodeNumberTests
     {
+        private IContext _context;
+
+        public NodeNumberTests()
+        {
+            _context = Substitute.For<IContext>();
+        }
+
         [Fact]
         public void GivenNumberNode_WhenEval_ThenNumberIsReturned()
         {
@@ -12,7 +20,7 @@ namespace Lexer.Testing
             double expected = 1.5;
 
             // Act
-            double actual = num.Eval();
+            double actual = num.Eval(_context);
 
             // Assert
             Assert.Equal(expected, actual);

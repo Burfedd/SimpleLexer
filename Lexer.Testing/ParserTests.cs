@@ -1,40 +1,90 @@
 ﻿using Xunit;
+using NSubstitute;
 
 namespace Lexer.Testing
 {
     public class ParserTests
     {
-        [Fact]
-        public void GivenDifferentMathsExpressions_WhenParse_ThenEvaluatedCorrectly()
+        private IContext _context;
+        public ParserTests()
         {
-            // Digits, numbers, fractions and unary operators
-            Assert.Equal(0, Parser.Parse("0"));
-            Assert.Equal(1, Parser.Parse("1"));
-            Assert.Equal(1, Parser.Parse("   1   "));
-            Assert.Equal(12, Parser.Parse("12"));
-            Assert.Equal(123, Parser.Parse("123"));
-            Assert.Equal(1234, Parser.Parse("1234"));
-            Assert.Equal(1.5, Parser.Parse("1,5"));
-            Assert.Equal(5.15, Parser.Parse("5,15"));
-            Assert.Equal(-1, Parser.Parse("-1"));
-            Assert.Equal(1, Parser.Parse("+1"));
+            _context = Substitute.For<IContext>();
+            _context.ResolveVariable(Arg.Any<string>()).Returns(1.5);
+        }
 
-            // Addition and subtraction
-            Assert.Equal(2, Parser.Parse("1+1"));
-            Assert.Equal(2, Parser.Parse("   1   +   1   "));
-            Assert.Equal(1, Parser.Parse("2-1"));
-            Assert.Equal(1, Parser.Parse("   2   -   1   "));
-            Assert.Equal(5, Parser.Parse("1 + 2 + 1 + 0,5 + 0,5"));
+        [Fact]
+        public void Parse_NumbersAndUnaryOperators()
+        {
+            Assert.Equal(0, Parser.Parse("0", _context));
+            Assert.Equal(1, Parser.Parse("1", _context));
+            Assert.Equal(1, Parser.Parse("   1   ", _context));
+            Assert.Equal(12, Parser.Parse("12", _context));
+            Assert.Equal(123, Parser.Parse("123", _context));
+            Assert.Equal(1234, Parser.Parse("1234", _context));
+            Assert.Equal(1.5, Parser.Parse("1,5", _context));
+            Assert.Equal(5.15, Parser.Parse("5,15", _context));
+            Assert.Equal(-1, Parser.Parse("-1", _context));
+            Assert.Equal(1, Parser.Parse("+1", _context));
+        }
 
-            // Multiplication and division
-            Assert.Equal(2, Parser.Parse("1*2"));
-            Assert.Equal(2, Parser.Parse("   1   *   2   "));
-            Assert.Equal(1024, Parser.Parse("2*2*2*2*2*2*2*2*2*2"));
-            Assert.Equal(6, Parser.Parse("1,5 * 4"));
-            Assert.Equal(2, Parser.Parse("4/2"));
-            Assert.Equal(2, Parser.Parse("   4   /   2   "));
-            Assert.Equal(2, Parser.Parse("1024/2/2/2/2/2/2/2/2/2"));
-            Assert.Equal(4, Parser.Parse("6 / 1,5"));
+        [Fact]
+        public void Parse_AdditionAndSubtraction()
+        {
+            Assert.Equal(2, Parser.Parse("1+1", _context));
+            Assert.Equal(2, Parser.Parse("   1   +   1   ", _context));
+            Assert.Equal(1, Parser.Parse("2-1", _context));
+            Assert.Equal(1, Parser.Parse("   2   -   1   ", _context));
+            Assert.Equal(5, Parser.Parse("1 + 2 + 1 + 0,5 + 0,5", _context));
+        }
+
+        [Fact]
+        public void Parse_MultiplicationAndDivision()
+        {
+            Assert.Equal(2, Parser.Parse("1*2", _context));
+            Assert.Equal(2, Parser.Parse("   1   *   2   ", _context));
+            Assert.Equal(1024, Parser.Parse("2*2*2*2*2*2*2*2*2*2", _context));
+            Assert.Equal(6, Parser.Parse("1,5 * 4", _context));
+            Assert.Equal(2, Parser.Parse("4/2", _context));
+            Assert.Equal(2, Parser.Parse("   4   /   2   ", _context));
+            Assert.Equal(2, Parser.Parse("1024/2/2/2/2/2/2/2/2/2", _context));
+            Assert.Equal(4, Parser.Parse("6 / 1,5", _context));
+        }
+
+        [Fact]
+        public void Parse_PrecedenceWithoutParentheses()
+        {
+            Assert.Equal(6, Parser.Parse("2+2*2", _context));
+            Assert.Equal(3, Parser.Parse("2+2/2", _context));
+            Assert.Equal(-7, Parser.Parse("5-3*4", _context));
+            Assert.Equal(3.5, Parser.Parse("5-3/2", _context));
+        }
+
+        [Fact]
+        public void Parse_PrecedenceWithParentheses()
+        {
+            Assert.Equal(8, Parser.Parse("(2+2)*2", _context));
+            Assert.Equal(8, Parser.Parse("2*(2+2)", _context));
+            Assert.Equal(130, Parser.Parse("5 * (2 + (3 * (7 + 1)))", _context));
+            Assert.Equal(3, Parser.Parse("4,5 / (2 - (3 / (7 - 1)))", _context));
+        }
+
+        [Fact]
+        public void Parse_Variables()
+        {
+            Assert.Equal(1.5, Parser.Parse("a", _context));
+            Assert.Equal(2.5, Parser.Parse("a + 1", _context));
+            Assert.Equal(2.5, Parser.Parse("1 + a", _context));
+            Assert.Equal(3, Parser.Parse("2 * a", _context));
+            Assert.Equal(2, Parser.Parse("3 / a", _context));
+            Assert.Equal(3.75, Parser.Parse("a + a * a", _context));
+            Assert.Equal(4.5, Parser.Parse("(a + a) * a", _context));
+            Assert.Equal(1.5, Parser.Parse("b", _context));
+            Assert.Equal(2.5, Parser.Parse("b + 1", _context));
+            Assert.Equal(2.5, Parser.Parse("1 + b", _context));
+            Assert.Equal(3, Parser.Parse("2 * b", _context));
+            Assert.Equal(2, Parser.Parse("3 / b", _context));
+            Assert.Equal(3.75, Parser.Parse("b + b * b", _context));
+            Assert.Equal(4.5, Parser.Parse("(b + b) * b", _context));
         }
     }
 }
