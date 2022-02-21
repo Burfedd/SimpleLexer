@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Globalization;
+using System.IO;
 using System.Text;
 
 namespace Lexer
@@ -97,24 +98,30 @@ namespace Lexer
                     NextChar();
                     _currentToken = Token.ClosingParenthesis;
                     return;
+
+                case ',':
+                    NextChar();
+                    _currentToken = Token.Comma;
+                    return;
             }
 
-            if (char.IsDigit(_currentChar) || _currentChar == ',')
+            if (char.IsDigit(_currentChar) || _currentChar == '.')
             {
                 StringBuilder sb = new StringBuilder();
                 bool haveDecimalPoint = false;
 
-                while(char.IsDigit(_currentChar) || (!haveDecimalPoint && _currentChar == ','))
+                while(char.IsDigit(_currentChar) || (!haveDecimalPoint && _currentChar == '.'))
                 {
                     sb.Append(_currentChar);
-                    if (_currentChar == ',')
+                    if (_currentChar == '.')
                     {
                         haveDecimalPoint = true;
                     }
                     NextChar();
                 }
 
-                _number = double.Parse(sb.ToString());
+                CultureInfo info = new CultureInfo("en-US", true);
+                _number = double.Parse(sb.ToString(), info.NumberFormat);
                 _currentToken = Token.Number;
                 return;
             }
@@ -149,6 +156,7 @@ namespace Lexer
         Number,
         OpeningParenthesis,
         ClosingParenthesis,
-        Identifier
+        Identifier,
+        Comma
     }
 }

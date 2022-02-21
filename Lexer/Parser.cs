@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Lexer
@@ -125,6 +126,34 @@ namespace Lexer
 
             if (_tokenizer.Token == Token.Identifier )
             {
+                string name = _tokenizer.Identifier;
+                _tokenizer.NextToken();
+
+                if (_tokenizer.Token == Token.OpeningParenthesis )
+                {
+                    _tokenizer.NextToken();
+
+                    List<Node> args = new List<Node>();
+                    while ( true )
+                    {
+                        args.Add(ParseAddSubtract());
+                        if (_tokenizer.Token == Token.Comma )
+                        {
+                            _tokenizer.NextToken();
+                            continue;
+                        }
+                        break;
+                    }
+
+                    if (_tokenizer.Token == Token.ClosingParenthesis )
+                    {
+                        _tokenizer.NextToken();
+                        return new NodeFunction(name, args.ToArray());
+                    }
+                    throw new Exception($"Invalid expression: missing closing parenthesis");
+
+                }
+
                 NodeVariable node = new NodeVariable(_tokenizer.Identifier);
                 _tokenizer.NextToken();
                 return node;
