@@ -10,6 +10,7 @@ namespace Lexer.Testing
         {
             _context = Substitute.For<IContext>();
             _context.ResolveVariable(Arg.Any<string>()).Returns(1.5);
+            _context.ResolveFunction(Arg.Any<string>(), Arg.Any<double[]>()).Returns(1.5);
         }
 
         [Fact]
@@ -85,6 +86,39 @@ namespace Lexer.Testing
             Assert.Equal(2, Parser.Parse("3 / b", _context));
             Assert.Equal(3.75, Parser.Parse("b + b * b", _context));
             Assert.Equal(4.5, Parser.Parse("(b + b) * b", _context));
+        }
+
+        [Fact]
+        public void Parse_Functions()
+        {
+            Assert.Equal(1.5, Parser.Parse("a(0)", _context));
+            Assert.Equal(3, Parser.Parse("1.5 + a(0)", _context));
+            Assert.Equal(3, Parser.Parse("a(0) + 1.5", _context));
+            Assert.Equal(0, Parser.Parse("a(0) - 1.5", _context));
+            Assert.Equal(0, Parser.Parse("1.5 - a(0)", _context));
+            Assert.Equal(1.5, Parser.Parse("a(0, 1, 2)", _context));
+            Assert.Equal(1.5, Parser.Parse("a(1.5, 1.2)", _context));
+            Assert.Equal(3, Parser.Parse("a(0) * 2", _context));
+            Assert.Equal(0.5, Parser.Parse("a(0) / 3", _context));
+            Assert.Equal(3.75, Parser.Parse("a(0) + a(0) * a(0)", _context));
+            Assert.Equal(4.5, Parser.Parse("(a(0) + a(0)) * a(0)", _context));
+        }
+
+        [Fact]
+        public void Parse_Bitshifts()
+        {
+            Assert.Equal(2, Parser.Parse("1 << 1", _context));
+            Assert.Equal(4, Parser.Parse("2 << 1", _context));
+            Assert.Equal(8, Parser.Parse("4 << 1", _context));
+            Assert.Equal(16, Parser.Parse("8 << 1", _context));
+            Assert.Equal(8, Parser.Parse("1 << 3", _context));
+            Assert.Equal(16, Parser.Parse("1 << 4", _context));
+            Assert.Equal(1, Parser.Parse("2 >> 1", _context));
+            Assert.Equal(2, Parser.Parse("4 >> 1", _context));
+            Assert.Equal(4, Parser.Parse("8 >> 1", _context));
+            Assert.Equal(8, Parser.Parse("16 >> 1", _context));
+            Assert.Equal(2, Parser.Parse("16 >> 3", _context));
+            Assert.Equal(1, Parser.Parse("16 >> 4", _context));
         }
     }
 }

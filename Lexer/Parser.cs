@@ -74,6 +74,32 @@ namespace Lexer
 
                 _tokenizer.NextToken();
 
+                Node right = ParseBitshift();
+                left = new NodeBinary(left, right, op);
+            }
+        }
+
+        private Node ParseBitshift()
+        {
+            Node left = ParseUnary();
+            while ( true )
+            {
+                Func<double, double, double> op = null;
+                switch ( _tokenizer.Token )
+                {
+                    case Token.BitshiftRight:
+                        op = (a, b) => ( int )a >> ( int )b;
+                        break;
+
+                    case Token.BitshiftLeft:
+                        op = (a, b) => ( int )a << ( int )b;
+                        break;
+
+                    default:
+                        return left;
+                }
+
+                _tokenizer.NextToken();
                 Node right = ParseUnary();
                 left = new NodeBinary(left, right, op);
             }
@@ -98,32 +124,6 @@ namespace Lexer
             }
 
             return ParseLeaf();
-        }
-
-        private Node ParseBitshift()
-        {
-            Node left = ParseUnary();
-            while ( true )
-            {
-                Func<double, double, double> op = null;
-                switch ( _tokenizer.Token )
-                {
-                    case Token.BitshiftRight:
-                        op = (a, b) => ( double )(( int )a >> ( int )b);
-                        break;
-
-                    case Token.BitshiftLeft:
-                        op = (a, b) => ( double )(( int )a << ( int )b);
-                        break;
-
-                    default:
-                        return left;
-                }
-
-                _tokenizer.NextToken();
-                Node right = ParseUnary();
-                left = new NodeBinary(left, right, op);
-            }
         }
 
         private Node ParseLeaf()
