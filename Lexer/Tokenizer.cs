@@ -105,6 +105,29 @@ namespace Lexer
                     return;
             }
 
+            if (_currentChar == '>' )
+            {
+                NextChar();
+                if (_currentChar == '>' )
+                {
+                    NextChar();
+                    _currentToken = Token.BitshiftRight;
+                    return;
+                }
+                throw new InvalidDataException("Invalid operator");
+            } 
+            else if (_currentChar == '<')
+            {
+                NextChar();
+                if ( _currentChar == '<' )
+                {
+                    NextChar();
+                    _currentToken = Token.BitshiftLeft;
+                    return;
+                }
+                throw new InvalidDataException("Invalid operator");
+            }
+
             if (char.IsDigit(_currentChar) || _currentChar == '.')
             {
                 StringBuilder sb = new StringBuilder();
@@ -157,6 +180,8 @@ namespace Lexer
         OpeningParenthesis,
         ClosingParenthesis,
         Identifier,
-        Comma
+        Comma,
+        BitshiftRight,
+        BitshiftLeft
     }
 }
