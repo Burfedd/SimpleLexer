@@ -103,6 +103,11 @@ namespace Lexer
                     NextChar();
                     _currentToken = Token.Comma;
                     return;
+
+                case '!':
+                    NextChar();
+                    _currentToken = Token.Factorial;
+                    return;
             }
 
             if (char.IsDigit(_currentChar) || _currentChar == '.')

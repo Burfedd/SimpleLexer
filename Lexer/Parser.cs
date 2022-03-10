@@ -103,6 +103,27 @@ namespace Lexer
                     return new NodeUnary(right, (x) => -x);
                 }
 
+                // factorial
+                if (_tokenizer.Token == Token.Factorial )
+                {
+                    _tokenizer.NextToken();
+                    var right = ParseUnary();
+                    return new NodeUnary(right, (x) =>
+                    {
+                        if (x == 0 )
+                        {
+                            return 1;
+                        }
+
+                        int sum = 0;
+                        for (int i = (int)x ; i > 0 ; i-- )
+                        {
+                            sum += i;
+                        }
+                        return sum;
+                    });
+                }
+
                 return ParseLeaf();
             }
         }
