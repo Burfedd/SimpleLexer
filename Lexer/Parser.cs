@@ -40,9 +40,11 @@ namespace Lexer
                     case Token.Subtract:
                         op = (a, b) => a - b;
                         break;
+                }
 
-                    default:
-                        return left;
+                if (op == null )
+                {
+                    return left;
                 }
 
                 _tokenizer.NextToken();
@@ -54,7 +56,7 @@ namespace Lexer
 
         private Node ParseMultiplyDivide()
         {
-            Node left = ParseBitshift();
+            Node left = ParseUnary();
             while ( true )
             {
                 Func<double, double, double> op = null;
@@ -67,39 +69,15 @@ namespace Lexer
                     case Token.Divide:
                         op = (a, b) => a / b;
                         break;
-
-                    default:
-                        return left;
                 }
 
-                _tokenizer.NextToken();
-
-                Node right = ParseBitshift();
-                left = new NodeBinary(left, right, op);
-            }
-        }
-
-        private Node ParseBitshift()
-        {
-            Node left = ParseUnary();
-            while ( true )
-            {
-                Func<double, double, double> op = null;
-                switch ( _tokenizer.Token )
+                if (op == null )
                 {
-                    case Token.BitshiftRight:
-                        op = (a, b) => ( int )a >> ( int )b;
-                        break;
-
-                    case Token.BitshiftLeft:
-                        op = (a, b) => ( int )a << ( int )b;
-                        break;
-
-                    default:
-                        return left;
+                    return left;
                 }
 
                 _tokenizer.NextToken();
+
                 Node right = ParseUnary();
                 left = new NodeBinary(left, right, op);
             }
@@ -107,27 +85,37 @@ namespace Lexer
 
         private Node ParseUnary()
         {
-            // + sign
-            if (_tokenizer.Token == Token.Add )
+            while ( true )
             {
-                _tokenizer.NextToken();
-                return ParseUnary();
+                // + sign
+                if ( _tokenizer.Token == Token.Add )
+                {
+                    _tokenizer.NextToken();
+                    continue;
+                }
+
+                // - sign
+                if ( _tokenizer.Token == Token.Subtract )
+                {
+                    _tokenizer.NextToken();
+
+                    var right = ParseUnary();
+                    return new NodeUnary(right, (x) => -x);
+                }
+
+                return ParseLeaf();
             }
-
-            // - sign
-            if (_tokenizer.Token == Token.Subtract )
-            {
-                _tokenizer.NextToken();
-
-                var right = ParseUnary();
-                return new NodeUnary(right, (x) => -x);
-            }
-
-            return ParseLeaf();
         }
 
         private Node ParseLeaf()
         {
+            if ( _tokenizer.Token == Token.Number )
+            {
+                NodeNumber node = new NodeNumber(_tokenizer.Number);
+                _tokenizer.NextToken();
+                return node;
+            }
+
             if (_tokenizer.Token == Token.OpeningParenthesis )
             {
                 _tokenizer.NextToken();
@@ -141,13 +129,6 @@ namespace Lexer
                 }
 
                 throw new Exception("Missing closing parenthesis!");
-            }
-
-            if (_tokenizer.Token == Token.Number)
-            {
-                NodeNumber node = new NodeNumber(_tokenizer.Number);
-                _tokenizer.NextToken();
-                return node;
             }
 
             if (_tokenizer.Token == Token.Identifier )
@@ -181,7 +162,6 @@ namespace Lexer
                 }
 
                 NodeVariable node = new NodeVariable(_tokenizer.Identifier);
-                _tokenizer.NextToken();
                 return node;
             }
 

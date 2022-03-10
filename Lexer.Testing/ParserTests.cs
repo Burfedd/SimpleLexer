@@ -22,8 +22,8 @@ namespace Lexer.Testing
             Assert.Equal(12, Parser.Parse("12", _context));
             Assert.Equal(123, Parser.Parse("123", _context));
             Assert.Equal(1234, Parser.Parse("1234", _context));
-            Assert.Equal(1.5, Parser.Parse("1,5", _context));
-            Assert.Equal(5.15, Parser.Parse("5,15", _context));
+            Assert.Equal(1.5, Parser.Parse("1.5", _context));
+            Assert.Equal(5.15, Parser.Parse("5.15", _context));
             Assert.Equal(-1, Parser.Parse("-1", _context));
             Assert.Equal(1, Parser.Parse("+1", _context));
         }
@@ -35,7 +35,7 @@ namespace Lexer.Testing
             Assert.Equal(2, Parser.Parse("   1   +   1   ", _context));
             Assert.Equal(1, Parser.Parse("2-1", _context));
             Assert.Equal(1, Parser.Parse("   2   -   1   ", _context));
-            Assert.Equal(5, Parser.Parse("1 + 2 + 1 + 0,5 + 0,5", _context));
+            Assert.Equal(5, Parser.Parse("1 + 2 + 1 + 0.5 + 0.5", _context));
         }
 
         [Fact]
@@ -44,11 +44,11 @@ namespace Lexer.Testing
             Assert.Equal(2, Parser.Parse("1*2", _context));
             Assert.Equal(2, Parser.Parse("   1   *   2   ", _context));
             Assert.Equal(1024, Parser.Parse("2*2*2*2*2*2*2*2*2*2", _context));
-            Assert.Equal(6, Parser.Parse("1,5 * 4", _context));
+            Assert.Equal(6, Parser.Parse("1.5 * 4", _context));
             Assert.Equal(2, Parser.Parse("4/2", _context));
             Assert.Equal(2, Parser.Parse("   4   /   2   ", _context));
             Assert.Equal(2, Parser.Parse("1024/2/2/2/2/2/2/2/2/2", _context));
-            Assert.Equal(4, Parser.Parse("6 / 1,5", _context));
+            Assert.Equal(4, Parser.Parse("6 / 1.5", _context));
         }
 
         [Fact]
@@ -66,7 +66,7 @@ namespace Lexer.Testing
             Assert.Equal(8, Parser.Parse("(2+2)*2", _context));
             Assert.Equal(8, Parser.Parse("2*(2+2)", _context));
             Assert.Equal(130, Parser.Parse("5 * (2 + (3 * (7 + 1)))", _context));
-            Assert.Equal(3, Parser.Parse("4,5 / (2 - (3 / (7 - 1)))", _context));
+            Assert.Equal(3, Parser.Parse("4.5 / (2 - (3 / (7 - 1)))", _context));
         }
 
         [Fact]
@@ -102,23 +102,6 @@ namespace Lexer.Testing
             Assert.Equal(0.5, Parser.Parse("a(0) / 3", _context));
             Assert.Equal(3.75, Parser.Parse("a(0) + a(0) * a(0)", _context));
             Assert.Equal(4.5, Parser.Parse("(a(0) + a(0)) * a(0)", _context));
-        }
-
-        [Fact]
-        public void Parse_Bitshifts()
-        {
-            Assert.Equal(2, Parser.Parse("1 << 1", _context));
-            Assert.Equal(4, Parser.Parse("2 << 1", _context));
-            Assert.Equal(8, Parser.Parse("4 << 1", _context));
-            Assert.Equal(16, Parser.Parse("8 << 1", _context));
-            Assert.Equal(8, Parser.Parse("1 << 3", _context));
-            Assert.Equal(16, Parser.Parse("1 << 4", _context));
-            Assert.Equal(1, Parser.Parse("2 >> 1", _context));
-            Assert.Equal(2, Parser.Parse("4 >> 1", _context));
-            Assert.Equal(4, Parser.Parse("8 >> 1", _context));
-            Assert.Equal(8, Parser.Parse("16 >> 1", _context));
-            Assert.Equal(2, Parser.Parse("16 >> 3", _context));
-            Assert.Equal(1, Parser.Parse("16 >> 4", _context));
         }
     }
 }

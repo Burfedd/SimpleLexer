@@ -25,6 +25,8 @@ namespace Lexer
                     return 3.14;
                 case "e":
                     return 2.72;
+                case "a":
+                    return 1.5;
             }
 
             throw new Exception("Invalid variable name!");
