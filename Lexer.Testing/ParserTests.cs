@@ -1,6 +1,8 @@
 ﻿using Xunit;
 using NSubstitute;
 using System;
+using Lexer.Context;
+using Lexer.Parsing;
 
 namespace Lexer.Testing
 {

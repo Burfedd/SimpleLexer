@@ -1,4 +1,6 @@
-﻿namespace Lexer
+﻿using Lexer.Context;
+
+namespace Lexer.Nodes
 {
     public abstract class Node
     {

@@ -1,5 +1,6 @@
-﻿
-namespace Lexer
+﻿using Lexer.Context;
+
+namespace Lexer.Nodes
 {
     public class NodeNumber : Node
     {

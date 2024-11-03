@@ -1,6 +1,7 @@
 ﻿using System;
+using Lexer.Context;
 
-namespace Lexer
+namespace Lexer.Nodes
 {
     public class NodeBinary : Node
     {

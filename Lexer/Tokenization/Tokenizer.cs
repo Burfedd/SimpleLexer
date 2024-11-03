@@ -2,11 +2,11 @@
 using System.IO;
 using System.Text;
 
-namespace Lexer
+namespace Lexer.Tokenization
 {
     public class Tokenizer
     {
-        private TextReader _reader;
+        private readonly TextReader _reader;
         private char _currentChar;
         private Token _currentToken;
         private double _number;
@@ -115,7 +115,7 @@ namespace Lexer
                 StringBuilder sb = new StringBuilder();
                 bool haveDecimalPoint = false;
 
-                while(char.IsDigit(_currentChar) || (!haveDecimalPoint && _currentChar == '.'))
+                while (char.IsDigit(_currentChar) || !haveDecimalPoint && _currentChar == '.')
                 {
                     sb.Append(_currentChar);
                     if (_currentChar == '.')
@@ -131,11 +131,11 @@ namespace Lexer
                 return;
             }
 
-            if (char.IsLetter(_currentChar) || _currentChar == '_' )
+            if (char.IsLetter(_currentChar) || _currentChar == '_')
             {
                 StringBuilder sb = new StringBuilder();
 
-                while (char.IsLetterOrDigit(_currentChar) || _currentChar == '_' )
+                while (char.IsLetterOrDigit(_currentChar) || _currentChar == '_')
                 {
                     sb.Append(_currentChar);
                     NextChar();
@@ -149,20 +149,5 @@ namespace Lexer
             // If nothing was parsed
             throw new InvalidDataException($"Invalid character: {_currentChar}");
         }
-    }
-
-    public enum Token
-    {
-        EOF,
-        Add,
-        Subtract,
-        Multiply,
-        Divide,
-        Number,
-        OpeningParenthesis,
-        ClosingParenthesis,
-        Identifier,
-        Comma,
-        Factorial
     }
 }

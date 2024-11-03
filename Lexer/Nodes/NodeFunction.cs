@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Lexer.Context;
 
-namespace Lexer
+namespace Lexer.Nodes
 {
     public class NodeFunction : Node
     {
@@ -20,7 +21,7 @@ namespace Lexer
         {
             double[] values = new double[_arguments.Length];
 
-            for (int i = 0 ; i < _arguments.Length ; i++ )
+            for (int i = 0; i < _arguments.Length; i++)
             {
                 values[i] = _arguments[i].Eval(context);
             }

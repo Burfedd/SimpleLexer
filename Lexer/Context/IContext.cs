@@ -1,5 +1,4 @@
-﻿
-namespace Lexer
+﻿namespace Lexer.Context
 {
     public interface IContext
     {

@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Lexer.Context;
+using Lexer.Nodes;
+using Lexer.Tokenization;
 
-namespace Lexer
+namespace Lexer.Parsing
 {
     public class Parser
     {
-        private Tokenizer _tokenizer;
+        private readonly Tokenizer _tokenizer;
         public Parser(Tokenizer tokenizer)
         {
             _tokenizer = tokenizer;
@@ -31,7 +34,7 @@ namespace Lexer
             while (true)
             {
                 Func<double, double, double> op = null;
-                switch ( _tokenizer.Token )
+                switch (_tokenizer.Token)
                 {
                     case Token.Add:
                         op = (a, b) => a + b;
@@ -42,7 +45,7 @@ namespace Lexer
                         break;
                 }
 
-                if (op == null )
+                if (op == null)
                 {
                     return left;
                 }
@@ -57,10 +60,10 @@ namespace Lexer
         private Node ParseMultiplyDivide()
         {
             Node left = ParseUnary();
-            while ( true )
+            while (true)
             {
                 Func<double, double, double> op = null;
-                switch ( _tokenizer.Token )
+                switch (_tokenizer.Token)
                 {
                     case Token.Multiply:
                         op = (a, b) => a * b;
@@ -71,7 +74,7 @@ namespace Lexer
                         break;
                 }
 
-                if (op == null )
+                if (op == null)
                 {
                     return left;
                 }
@@ -85,17 +88,17 @@ namespace Lexer
 
         private Node ParseUnary()
         {
-            while ( true )
+            while (true)
             {
                 // + sign
-                if ( _tokenizer.Token == Token.Add )
+                if (_tokenizer.Token == Token.Add)
                 {
                     _tokenizer.NextToken();
                     continue;
                 }
 
                 // - sign
-                if ( _tokenizer.Token == Token.Subtract )
+                if (_tokenizer.Token == Token.Subtract)
                 {
                     _tokenizer.NextToken();
 
@@ -104,19 +107,19 @@ namespace Lexer
                 }
 
                 // factorial
-                if (_tokenizer.Token == Token.Factorial )
+                if (_tokenizer.Token == Token.Factorial)
                 {
                     _tokenizer.NextToken();
                     var right = ParseUnary();
                     return new NodeUnary(right, (x) =>
                     {
-                        if (x == 0 )
+                        if (x == 0)
                         {
                             return 1;
                         }
 
                         int sum = 0;
-                        for (int i = (int)x ; i > 0 ; i-- )
+                        for (int i = (int)x; i > 0; i--)
                         {
                             sum += i;
                         }
@@ -130,20 +133,20 @@ namespace Lexer
 
         private Node ParseLeaf()
         {
-            if ( _tokenizer.Token == Token.Number )
+            if (_tokenizer.Token == Token.Number)
             {
                 NodeNumber node = new NodeNumber(_tokenizer.Number);
                 _tokenizer.NextToken();
                 return node;
             }
 
-            if (_tokenizer.Token == Token.OpeningParenthesis )
+            if (_tokenizer.Token == Token.OpeningParenthesis)
             {
                 _tokenizer.NextToken();
 
                 Node node = ParseAddSubtract();
 
-                if (_tokenizer.Token == Token.ClosingParenthesis )
+                if (_tokenizer.Token == Token.ClosingParenthesis)
                 {
                     _tokenizer.NextToken();
                     return node;
@@ -152,20 +155,20 @@ namespace Lexer
                 throw new Exception("Missing closing parenthesis!");
             }
 
-            if (_tokenizer.Token == Token.Identifier )
+            if (_tokenizer.Token == Token.Identifier)
             {
                 string name = _tokenizer.Identifier;
                 _tokenizer.NextToken();
 
-                if (_tokenizer.Token == Token.OpeningParenthesis )
+                if (_tokenizer.Token == Token.OpeningParenthesis)
                 {
                     _tokenizer.NextToken();
 
                     List<Node> args = new List<Node>();
-                    while ( true )
+                    while (true)
                     {
                         args.Add(ParseAddSubtract());
-                        if (_tokenizer.Token == Token.Comma )
+                        if (_tokenizer.Token == Token.Comma)
                         {
                             _tokenizer.NextToken();
                             continue;
@@ -173,7 +176,7 @@ namespace Lexer
                         break;
                     }
 
-                    if (_tokenizer.Token == Token.ClosingParenthesis )
+                    if (_tokenizer.Token == Token.ClosingParenthesis)
                     {
                         _tokenizer.NextToken();
                         return new NodeFunction(name, args.ToArray());

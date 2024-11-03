@@ -1,17 +1,17 @@
 ﻿using System;
 
-namespace Lexer
+namespace Lexer.Context
 {
     public class SampleContext : IContext
     {
         public double ResolveFunction(string name, double[] arguments)
         {
-            switch ( name )
+            switch (name)
             {
                 case "Perimeter":
                     return (arguments[0] + arguments[1]) * 2;
                 case "Area":
-                    return (arguments[0] * arguments[1]);
+                    return arguments[0] * arguments[1];
             }
 
             throw new Exception("Invalid function name!");
@@ -19,7 +19,7 @@ namespace Lexer
 
         public double ResolveVariable(string name)
         {
-            switch ( name )
+            switch (name)
             {
                 case "pi":
                     return 3.14;

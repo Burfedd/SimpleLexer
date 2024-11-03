@@ -1,5 +1,7 @@
 ﻿using Xunit;
 using NSubstitute;
+using Lexer.Nodes;
+using Lexer.Context;
 
 namespace Lexer.Testing
 {

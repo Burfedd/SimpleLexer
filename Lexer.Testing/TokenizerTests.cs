@@ -1,5 +1,6 @@
 ﻿using Xunit;
 using System.IO;
+using Lexer.Tokenization;
 
 namespace Lexer.Testing
 {
