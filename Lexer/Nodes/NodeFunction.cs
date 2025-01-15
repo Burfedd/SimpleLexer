@@ -11,6 +11,7 @@ namespace Lexer.Nodes
     {
         private string _functionName;
         private Node[] _arguments;
+        
         public NodeFunction(string functionName, Node[] arguments)
         {
             _functionName = functionName;

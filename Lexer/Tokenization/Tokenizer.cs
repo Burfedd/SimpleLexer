@@ -103,24 +103,19 @@ namespace Lexer.Tokenization
                     NextChar();
                     _currentToken = Token.Comma;
                     return;
-
-                case '!':
-                    NextChar();
-                    _currentToken = Token.Factorial;
-                    return;
             }
 
             if (char.IsDigit(_currentChar) || _currentChar == '.')
             {
                 StringBuilder sb = new StringBuilder();
-                bool haveDecimalPoint = false;
+                bool hasDecimalPoint = false;
 
-                while (char.IsDigit(_currentChar) || !haveDecimalPoint && _currentChar == '.')
+                while (char.IsDigit(_currentChar) || !hasDecimalPoint && _currentChar == '.')
                 {
                     sb.Append(_currentChar);
                     if (_currentChar == '.')
                     {
-                        haveDecimalPoint = true;
+                        hasDecimalPoint = true;
                     }
                     NextChar();
                 }

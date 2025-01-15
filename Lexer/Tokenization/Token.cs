@@ -11,7 +11,6 @@
         OpeningParenthesis,
         ClosingParenthesis,
         Identifier,
-        Comma,
-        Factorial
+        Comma
     }
 }
