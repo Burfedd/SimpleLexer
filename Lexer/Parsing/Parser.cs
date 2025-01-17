@@ -90,20 +90,20 @@ namespace Lexer.Parsing
         {
             while (true)
             {
-                // + sign
-                if (_tokenizer.Token == Token.Add)
+                switch (_tokenizer.Token)
                 {
-                    _tokenizer.NextToken();
-                    continue;
-                }
+                    case Token.Add:
+                    {
+                        _tokenizer.NextToken();
+                        continue;
+                    };
+                    case Token.Subtract:
+                    {
+                        _tokenizer.NextToken();
 
-                // - sign
-                if (_tokenizer.Token == Token.Subtract)
-                {
-                    _tokenizer.NextToken();
-
-                    var right = ParseUnary();
-                    return new NodeUnary(right, (x) => -x);
+                        var right = ParseUnary();
+                        return new NodeUnary(right, (x) => -x);
+                    }
                 }
 
                 return ParseLeaf();
