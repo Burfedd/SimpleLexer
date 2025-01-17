@@ -123,6 +123,31 @@ namespace Lexer.Tokenization
                 CultureInfo info = new CultureInfo("en-US", true);
                 _number = double.Parse(sb.ToString(), info.NumberFormat);
                 _currentToken = Token.Number;
+
+                if (_currentChar == '!') 
+                {
+                    NextChar();
+                    if (hasDecimalPoint) throw new InvalidDataException($"Invalid factorial: {_number} {_currentChar}");
+
+                    if (double.IsInteger(_number))
+                    {
+                        if (_number == 0)
+                        {
+                            _number = 1;
+                        }
+                        else
+                        {
+                            double result = 0;
+                            while (_number > 0)
+                            {
+                                result += _number;
+                                _number--;
+                            }
+                            _number = result;
+                        }
+                    }
+                }
+
                 return;
             }
 

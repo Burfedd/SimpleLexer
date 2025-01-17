@@ -106,5 +106,14 @@ namespace Lexer.Testing
             Assert.Equal(3.75, Parser.Parse("a(0) + a(0) * a(0)", _context));
             Assert.Equal(4.5, Parser.Parse("(a(0) + a(0)) * a(0)", _context));
         }
+
+        [Fact]
+        public void Parse_Factorials()
+        {
+            Assert.Equal(1, Parser.Parse("0!", _context));
+            Assert.Equal(1, Parser.Parse("1!", _context));
+            Assert.Equal(3, Parser.Parse("2!", _context));
+            Assert.Equal(6, Parser.Parse("3!", _context));
+        }
     }
 }
