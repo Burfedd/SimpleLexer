@@ -3,6 +3,7 @@ using NSubstitute;
 using System;
 using Lexer.Context;
 using Lexer.Parsing;
+using System.IO;
 
 namespace Lexer.Testing
 {
@@ -114,6 +115,8 @@ namespace Lexer.Testing
             Assert.Equal(1, Parser.Parse("1!", _context));
             Assert.Equal(3, Parser.Parse("2!", _context));
             Assert.Equal(6, Parser.Parse("3!", _context));
+            Assert.Equal(39, Parser.Parse("3! + 2! + 10 * 3", _context));
+            Assert.Throws<InvalidDataException>(() => Parser.Parse("2.5!", _context));
         }
     }
 }
