@@ -10,9 +10,17 @@ public class ExpressionVisualizer
     {
         _tokenizer = tokenizer;
         _lines = new Stack<string>();
+        GenerateTree();
     }
 
-    public void GenerateTree()
+    private void GenerateTree()
+    {
+        // Shunting yard algorithm
+
+        
+    }
+
+    public void Print()
     {
         // a + b            5 * (a + b) / 12
         //   +                          /
@@ -22,10 +30,7 @@ public class ExpressionVisualizer
         //                          5   +
         //                             / \
         //                            a   b
-    }
 
-    public void Print()
-    {
 
     }
 }
